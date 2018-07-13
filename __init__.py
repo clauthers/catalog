@@ -16,6 +16,7 @@ from flask import make_response
 import requests
 
 application = Flask(__name__)
+application.secret_key = 'super_secret_key'
 
 engine = create_engine('postgresql://catalog:udacity@localhost:5432/catalog')
 Base.metadata.bind = engine
