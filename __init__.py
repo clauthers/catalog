@@ -1,9 +1,10 @@
+#!/usr/bin/python3
 from flask import Flask, render_template, request
 from flask import redirect, jsonify, url_for, flash
 from sqlalchemy import create_engine, asc
 import psycopg2
 from sqlalchemy.orm import sessionmaker
-from .database_setup import Category, Base, ItemCatalog, User
+from database_setup import Category, Base, ItemCatalog, User
 from flask import session as login_session
 import random
 import string
