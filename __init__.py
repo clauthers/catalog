@@ -15,7 +15,7 @@ import json
 from flask import make_response
 import requests
 
-app = Flask(__name__)
+application = Flask(__name__)
 
 engine = create_engine('postgresql://catalog:udacity@localhost:5432/catalog')
 Base.metadata.bind = engine
@@ -24,7 +24,7 @@ DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
 CLIENT_ID = json.loads(
-    open('client_secrets.json', 'r').read())['web']['client_id']
+    open('/var/www/html/catalog/client_secrets.json', 'r').read())['web']['client_id']
 APPLICATION_NAME = "Catalog Application"
 
 
@@ -314,5 +314,6 @@ def disconnect():
 
 
 if __name__ == '__main__':
-    app.secret_key = 'super_secret_key'
-    app.debug = False
+    application.secret_key = 'super_secret_key'
+    application.debug = False
+    application.run()
