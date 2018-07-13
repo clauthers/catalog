@@ -29,7 +29,7 @@ APPLICATION_NAME = "Catalog Application"
 
 
 # Create anti-forgery state token
-@app.route('/login')
+@application.route('/login')
 def showLogin():
     state = ''.join(random.choice(string.ascii_uppercase + string.digits)
                     for x in range(32))
@@ -37,7 +37,7 @@ def showLogin():
     return render_template('login.html', STATE=state)
 
 
-@app.route('/gconnect', methods=['POST'])
+@application.route('/gconnect', methods=['POST'])
 def gconnect():
     # Validate state token
     if request.args.get('state') != login_session['state']:
@@ -79,7 +79,7 @@ def gconnect():
         response.headers['Content-Type'] = 'application/json'
         return response
 
-    # Verify that the access token is valid for this app.
+    # Verify that the access token is valid for this application.
     if result['issued_to'] != CLIENT_ID:
         response = make_response(
             json.dumps("Token's client ID does not match app's."), 401)
@@ -156,7 +156,7 @@ def getUserID(email):
 # DISCONNECT - Revoke a current user's token and reset their login_session
 
 
-@app.route('/gdisconnect')
+@application.route('/gdisconnect')
 def gdisconnect():
     # Only disconnect a connected user.
     access_token = login_session.get('access_token')
@@ -178,7 +178,7 @@ def gdisconnect():
         return response
 
 
-@app.route('/catalog/<int:category_id>/item.json')
+@application.route('/catalog/<int:category_id>/item.json')
 def CategoryItemJSON(category_id):
     category = session.query(Category).filter_by(id=category_id).one()
     items = session.query(ItemCatalog).filter_by(
@@ -186,21 +186,21 @@ def CategoryItemJSON(category_id):
     return jsonify(CategoryItems=[i.serialize for i in items])
 
 
-@app.route('/catalog/<int:category_id>/item/<int:item_id>.json')
+@application.route('/catalog/<int:category_id>/item/<int:item_id>.json')
 def ItemJSON(category_id, item_id):
     Catalog_Item = session.query(ItemCatalog).filter_by(id=item_id).one()
     return jsonify(Catalog_Item=Catalog_Item.serialize)
 
 
-@app.route('/catalog.json')
+@application.route('/catalog.json')
 def catalogJSON():
     categories = session.query(Category).all()
     return jsonify(Category=[c.serialize for c in categories])
 
 
 # Show Catalog main page
-@app.route('/')
-@app.route('/catalog/')
+@application.route('/')
+@application.route('/catalog/')
 def showcCategories():
     categories = session.query(Category).all()
     latest_items = session.query(ItemCatalog).\
@@ -216,8 +216,8 @@ def showcCategories():
 
 
 # Show a Catalog Category
-@app.route('/catalog/<int:category_id>/')
-@app.route('/catalog/<int:category_id>/item/')
+@application.route('/catalog/<int:category_id>/')
+@application.route('/catalog/<int:category_id>/item/')
 def showItems(category_id):
     category = session.query(Category).filter_by(id=category_id).one()
     items = session.query(ItemCatalog).filter_by(
@@ -231,7 +231,7 @@ def showItems(category_id):
 
 
 # Create a new Category Item
-@app.route(
+@application.route(
     '/catalog/<int:category_id>/item/new/', methods=['GET', 'POST'])
 def newCatalogItem(category_id):
     if 'username' not in login_session:
@@ -250,7 +250,7 @@ def newCatalogItem(category_id):
 
 
 # Edit a Category Item
-@app.route('/catalog/<int:category_id>/item/<int:item_id>/edit',
+@application.route('/catalog/<int:category_id>/item/<int:item_id>/edit',
            methods=['GET', 'POST'])
 def editCatalogItem(category_id, item_id):
     if 'username' not in login_session:
@@ -275,7 +275,7 @@ def editCatalogItem(category_id, item_id):
 
 
 # Delete a Category item
-@app.route('/catalog/<int:category_id>/item/<int:item_id>/delete',
+@application.route('/catalog/<int:category_id>/item/<int:item_id>/delete',
            methods=['GET', 'POST'])
 def deleteCatalogItem(category_id, item_id):
     if 'username' not in login_session:
@@ -294,7 +294,7 @@ def deleteCatalogItem(category_id, item_id):
 
 
 # Disconnect based on provider
-@app.route('/disconnect')
+@application.route('/disconnect')
 def disconnect():
     if 'provider' in login_session:
         if login_session['provider'] == 'google':
